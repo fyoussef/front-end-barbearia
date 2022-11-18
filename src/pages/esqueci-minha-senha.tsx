@@ -51,7 +51,7 @@ export default function ForgetPassword() {
 
           <div>
               <p className="text-sm text-center">
-                  Voltar para o <Link className="underline hover:text-blue-500" href='/cadastro'>login</Link>
+                  Voltar para o <Link className="underline hover:text-blue-500" href='/login'>login</Link>
               </p>
           </div>
 
