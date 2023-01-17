@@ -1,10 +1,20 @@
+import axios from 'axios';
 import { format } from 'date-fns';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import { useState } from 'react'
 import { Datepicker } from '../components/Datepicker'
 import { AvatarIcon } from '../components/Icons'
+import { api } from '../utils/axios';
 
-export default function Home() {
+type HomeProps = {
+  schedules: {
+    hour: string,
+    barber_id: string
+  }[]
+}
+
+export default function Home({ schedules }: HomeProps) {
 
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -20,7 +30,7 @@ export default function Home() {
         <link rel="icon" href="/mustache_16.png" />
       </Head>
 
-      <div className="flex flex-col items-center mt-8">
+      <div className="flex flex-col items-center mt-8 py-4">
 
         <Datepicker handleSelectedDate={handleSelectedDate} />
 
@@ -30,24 +40,29 @@ export default function Home() {
           </div>
           <div className="flow-root">
             <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-              <li className="py-3 sm:py-4 cursor-pointer">
-                <div className="flex items-center space-x-4">
-                  <div className="flex-shrink-0">
-                    <AvatarIcon />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                      Neil Sims
-                    </p>
-                    <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                      email@windster.com
-                    </p>
-                  </div>
-                  <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                    09:00
-                  </div>
-                </div>
-              </li>
+              {/* {
+                schedules.map((schedule) => (
+                  <li className="py-4 cursor-pointer">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <AvatarIcon />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                          Neil Sims
+                        </p>
+                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                          email@windster.com
+                        </p>
+                      </div>
+                      <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                        {schedule.hour}
+                      </div>
+                    </div>
+                  </li>
+                ))
+              }
+               */}
             </ul>
           </div>
         </div>
@@ -55,4 +70,14 @@ export default function Home() {
 
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { data } = await api.get('/')
+  console.log(data)
+  return {
+    props: {
+      
+    }
+  }
 }
