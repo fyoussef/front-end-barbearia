@@ -1,5 +1,12 @@
-import axios from 'axios'
+import axios from "axios";
+import { parseCookies } from "nookies";
+
+const { user_token: token } = parseCookies();
 
 export const api = axios.create({
-    baseURL: 'https://ts-api-production.up.railway.app/'
-})
+  baseURL: "http://localhost:5000",
+});
+
+if (token) {
+  api.defaults.headers["Authorization"] = `Bearer ${token}`;
+}
