@@ -1,12 +1,15 @@
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { MustacheIcon } from "../components/Icons";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { signIn } = useContext(AuthContext);
 
   async function handleLogin() {
     if (!email || !password) {
@@ -18,14 +21,11 @@ export default function Login() {
       password,
     };
 
-    const res = await axios.post(
-      "http://localhost:5000/user/authenticate",
-      data
-    );
-
-    const { data: token } = res;
-
-    console.log("token", token);
+    try {
+      await signIn(data);
+    } catch (error) {
+      console.log("error", error);
+    }
   }
 
   return (
