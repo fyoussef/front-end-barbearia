@@ -21,7 +21,7 @@ interface AuthProvider {
 export const AuthContext = createContext({} as AuthContext);
 
 export function AuthProvider({ children }: AuthProvider) {
-  const [token, setToken] = useState();
+  const [token, setToken] = useState("");
 
   const isAuthenticated = !!token;
   const router = useRouter();
@@ -32,13 +32,13 @@ export function AuthProvider({ children }: AuthProvider) {
       password,
     });
 
-    setCookie(undefined, "user_token", data, {
-      maxAge: 60 * 60 * 5, // 5 hour
+    setCookie(undefined, "user_token", data.token, {
+      maxAge: 60 * 15, // 15 min
     });
 
-    api.defaults.headers["Authorization"] = `Bearer ${data}`;
+    api.defaults.headers["Authorization"] = `Bearer ${data.token}`;
 
-    setToken(data);
+    setToken(data.token);
     router.push("/");
   }
 

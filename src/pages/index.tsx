@@ -1,10 +1,12 @@
 import axios from "axios";
 import { format } from "date-fns";
-import { GetStaticProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Datepicker } from "../components/Datepicker";
 import { AvatarIcon } from "../components/Icons";
+import { AuthContext } from "../context/AuthContext";
+import { getClientToken } from "../utils/getClientToken";
 
 type HomeProps = {
   schedules: {
@@ -67,13 +69,22 @@ export default function Home({ schedules }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  /* const barber_id = "e32ef709-739a-4537-9f7f-3921e3f63900";
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const token = getClientToken(ctx);
+  console.log(token);
 
-  const res = await axios.get("http://localhost:5000/schedules/" + barber_id);
-  const { schedules } = res.data; */
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
   return {
-    props: { schedules: [] },
+    props: {
+      schedules: [],
+    },
   };
 };

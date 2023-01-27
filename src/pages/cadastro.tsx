@@ -31,7 +31,7 @@ export default function SignUp() {
     try {
       const res = await axios.post("http://localhost:5000/user", data);
       const { status } = res;
-
+      console.log("res", res);
       if (status == 201) {
         console.log("REGISTRADO");
         router.push("/login");
