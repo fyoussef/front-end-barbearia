@@ -31,17 +31,14 @@ export default function Home({ schedules }: HomeProps) {
       <div className="flex flex-col items-center mt-8">
         <Datepicker handleSelectedDate={handleSelectedDate} />
 
-        <div className="w-[546px] p-4 bg-white border rounded-lg shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 mb-8">
+        <div className="w-[546px] p-4 bg-white border rounded-lg shadow-md sm:p-8 mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+            <h5 className="text-xl font-bold leading-none text-gray-900 ">
               Agenda do dia {format(selectedDate, "dd/MM/yyyy")}
             </h5>
           </div>
           <div className="flow-root">
-            <ul
-              role="list"
-              className="divide-y divide-gray-200 dark:divide-gray-700"
-            >
+            <ul role="list" className="divide-y divide-gray-200 ">
               {schedules.map((schedule) => (
                 <li className="py-3 sm:py-4 cursor-pointer" key={schedule.hour}>
                   <div className="flex items-center space-x-4">
@@ -49,14 +46,14 @@ export default function Home({ schedules }: HomeProps) {
                       <AvatarIcon />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                      <p className="text-sm font-medium text-gray-900 truncate ">
                         Horário Livre
                       </p>
-                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                      <p className="text-sm text-gray-500 truncate ">
                         {/* email@windster.com */}
                       </p>
                     </div>
-                    <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                    <div className="inline-flex items-center text-base font-semibold text-gray-900 ">
                       {schedule.hour}
                     </div>
                   </div>
