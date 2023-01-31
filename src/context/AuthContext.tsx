@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { setCookie } from "nookies";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { api } from "../utils/axios";
 
 interface AuthContext {
@@ -41,6 +41,19 @@ export function AuthProvider({ children }: AuthProvider) {
     setToken(data.token);
     router.push("/");
   }
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      api
+        .post(
+          "http://localhost:5000/user/refreshToken/9d30798b-966a-4966-a9a8-7b25402914d8"
+        )
+        .then((res) => {
+          console.log("data", res.data.token);
+          setToken(res.data.token);
+        });
+    }
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn }}>

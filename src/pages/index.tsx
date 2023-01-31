@@ -1,11 +1,11 @@
-import axios from "axios";
 import { format } from "date-fns";
 import { GetServerSideProps, GetStaticProps } from "next";
 import Head from "next/head";
-import { useContext, useState } from "react";
+import { setCookie } from "nookies";
+import { useState } from "react";
 import { Datepicker } from "../components/Datepicker";
 import { AvatarIcon } from "../components/Icons";
-import { AuthContext } from "../context/AuthContext";
+import { api } from "../utils/axios";
 import { getClientToken } from "../utils/getClientToken";
 
 type HomeProps = {
