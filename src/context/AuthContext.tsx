@@ -49,7 +49,9 @@ export function AuthProvider({ children }: AuthProvider) {
           "http://localhost:5000/user/refreshToken/9d30798b-966a-4966-a9a8-7b25402914d8"
         )
         .then((res) => {
-          console.log("data", res.data.token);
+          setCookie(undefined, "user_token", res.data.token, {
+            maxAge: 60 * 15, // 15 min
+          });
           setToken(res.data.token);
         });
     }

@@ -71,7 +71,6 @@ export default function Home({ schedules }: HomeProps) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const token = getClientToken(ctx);
-  console.log(token);
 
   if (!token) {
     return {
