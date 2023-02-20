@@ -1,10 +1,11 @@
 import { format } from "date-fns";
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { parseCookies, setCookie } from "nookies";
 import { useState } from "react";
 import { Datepicker } from "../components/Datepicker";
 import { AvatarIcon } from "../components/Icons";
+import { ScheduleModal } from "../components/ScheduleModal";
 import { api } from "../utils/axios";
 import { getClientToken } from "../utils/getClientToken";
 
@@ -42,24 +43,29 @@ export default function Home({ schedules }: HomeProps) {
           <div className="flow-root">
             <ul role="list" className="divide-y divide-gray-200 ">
               {schedules.map((schedule) => (
-                <li className="py-3 sm:py-4 cursor-pointer" key={schedule.hour}>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      <AvatarIcon />
+                <ScheduleModal title={`Agenda para ${schedule.hour}`}>
+                  <li
+                    className="py-3 sm:py-4 cursor-pointer hover:bg-slate-200 p-4"
+                    key={schedule.hour}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <AvatarIcon />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate ">
+                          Horário Livre
+                        </p>
+                        <p className="text-sm text-gray-500 truncate ">
+                          {/* email@windster.com */}
+                        </p>
+                      </div>
+                      <div className="inline-flex items-center text-base font-semibold text-gray-900 ">
+                        {schedule.hour}
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate ">
-                        Horário Livre
-                      </p>
-                      <p className="text-sm text-gray-500 truncate ">
-                        {/* email@windster.com */}
-                      </p>
-                    </div>
-                    <div className="inline-flex items-center text-base font-semibold text-gray-900 ">
-                      {schedule.hour}
-                    </div>
-                  </div>
-                </li>
+                  </li>
+                </ScheduleModal>
               ))}
             </ul>
           </div>
