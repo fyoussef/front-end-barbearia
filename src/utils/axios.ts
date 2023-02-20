@@ -6,7 +6,7 @@ let isRefreshing = false;
 let failedRequestsQueue: any = [];
 
 export const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: process.env.API_URL,
 });
 
 if (cookies) {

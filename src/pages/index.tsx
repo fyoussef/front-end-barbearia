@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { GetServerSideProps, GetStaticProps } from "next";
 import Head from "next/head";
-import { setCookie } from "nookies";
+import { parseCookies, setCookie } from "nookies";
 import { useState } from "react";
 import { Datepicker } from "../components/Datepicker";
 import { AvatarIcon } from "../components/Icons";
@@ -81,9 +81,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  api.defaults.headers["Authorization"] = `Bearer ${
+    parseCookies(ctx).user_token
+  }`;
+
+  const req = await api.get("/schedules");
+
+  const { schedules } = req.data;
+
   return {
     props: {
-      schedules: [],
+      schedules,
     },
   };
 };
