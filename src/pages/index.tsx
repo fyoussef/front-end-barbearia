@@ -43,11 +43,13 @@ export default function Home({ schedules }: HomeProps) {
           <div className="flow-root">
             <ul role="list" className="divide-y divide-gray-200 ">
               {schedules.map((schedule) => (
-                <ScheduleModal title={`Agenda para ${schedule.hour}`}>
-                  <li
-                    className="py-3 sm:py-4 cursor-pointer hover:bg-slate-200 p-4"
-                    key={schedule.hour}
-                  >
+                <ScheduleModal
+                  key={schedule.hour}
+                  title={`Agenda para ${schedule.hour}`}
+                  scheduleDate={selectedDate}
+                  scheduleHour={schedule.hour}
+                >
+                  <li className="py-3 sm:py-4 cursor-pointer hover:bg-slate-200 p-4">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         <AvatarIcon />
