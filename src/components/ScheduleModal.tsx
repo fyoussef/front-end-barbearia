@@ -62,9 +62,29 @@ export function ScheduleModal({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+
   const barber_id = "";
+
+  function handleSelecService(service: string) {
+    const serviceAlreadySeleced = selectedServices.find(
+      (item) => item == service
+    );
+    if (serviceAlreadySeleced) {
+      const services = selectedServices.filter((items) => items != service);
+      return setSelectedServices(services);
+    }
+    return setSelectedServices([...selectedServices, service]);
+  }
+
+  function onCloseToast() {
+    setShowToast(false);
+    setSuccessMessage("");
+    setErrorMessage("");
+  }
 
   async function handleClientScheule() {
     /* { name, phone, scheduledAt, barber_id } */
@@ -76,8 +96,11 @@ export function ScheduleModal({
       minutes: Number(min),
     });
 
-    if (!name && !phone) {
-      console.log("erro");
+    if (!name) {
+      setShowToast(true);
+      return setErrorMessage(
+        "Forneça o nome do cliente para realizar o agendamento"
+      );
     }
 
     try {
@@ -90,7 +113,8 @@ export function ScheduleModal({
 
       const { data } = req;
 
-      console.log("data", data);
+      setShowToast(true);
+      setSuccessMessage(data.message);
     } catch (error: any) {
       const data = error.response.data;
       const message = data.error;
@@ -128,7 +152,12 @@ export function ScheduleModal({
                 {services.map(({ icon, service }) => (
                   <button
                     key={service}
-                    className="border border-slate-400 p-2 rounded-md flex flex-col items-center justify-center gap-y-4 hover:bg-gray-200"
+                    className={`${
+                      selectedServices.includes(service)
+                        ? "border-blue-500 bg-blue-100"
+                        : "border-slate-400 hover:bg-gray-200"
+                    } border p-2 rounded-md flex flex-col items-center justify-center gap-y-4 `}
+                    onClick={() => handleSelecService(service)}
                   >
                     {icon}
                     <small className="font-medium">{service}</small>
@@ -162,9 +191,10 @@ export function ScheduleModal({
       </Dialog.Root>
       {showToast && (
         <ToastComponent
-          message={errorMessage}
-          title="Erro"
-          resetState={setShowToast}
+          message={errorMessage || successMessage}
+          title={successMessage ? "Agendado" : "Erro"}
+          onCloseToast={onCloseToast}
+          variant={successMessage ? "success" : "error"}
         />
       )}
     </>

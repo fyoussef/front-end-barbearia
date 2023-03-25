@@ -16,67 +16,69 @@ if (cookies) {
 api.interceptors.response.use(
   (res) => res, // if response ok, return and proced
   (erro: any) => {
-    if (erro.response?.status === 401) {
-      if (erro.response.data?.code === "token.expired") {
-        // refresh token
-        cookies = parseCookies();
+    if (
+      erro.response.status == 401 &&
+      erro.response.data?.code === "token.expired"
+    ) {
+      // refresh token
+      cookies = parseCookies();
 
-        const { user_refreshToken: refreshToken } = cookies;
-        const originalConfig = erro.config;
+      const { user_refreshToken: refreshToken } = cookies;
+      const originalConfig = erro.config;
 
-        // call refresh once independent how many request have been sended
-        if (!isRefreshing) {
-          isRefreshing = true;
+      // call refresh once independent how many request have been sended
+      if (!isRefreshing) {
+        isRefreshing = true;
 
-          api
-            .post("/refreshToken")
-            .then((res) => {
-              const data = res.data;
+        api
+          .post("/refresh")
+          .then((res) => {
+            const data = res.data;
 
-              setCookie(undefined, "user_token", data.token, {
-                maxAge: 60 * 60 * 24 * 30, // 30 days
-                path: "/",
-              });
-
-              setCookie(undefined, "user_refreshToken", data.refreshToken, {
-                maxAge: 60 * 60 * 24 * 30, // 30 days
-              });
-
-              api.defaults.headers["Authorization"] = `Bearer ${data.token}`;
-
-              failedRequestsQueue.forEach((req: any) =>
-                req.onSuccess(data.token)
-              );
-              failedRequestsQueue = [];
-            })
-            .catch((erro) => {
-              failedRequestsQueue.forEach((req: any) => req.onFailure(erro));
-              failedRequestsQueue = [];
-            })
-            .finally(() => {
-              isRefreshing = false;
+            setCookie(undefined, "user_token", data.token, {
+              maxAge: 60 * 60 * 24 * 30, // 30 days
+              path: "/",
             });
-        }
 
-        return new Promise((resolve, reject) => {
-          failedRequestsQueue.push({
-            onSuccess: (token: string) => {
-              originalConfig.headers["Authorization"] = `Bearer ${token}`;
+            setCookie(undefined, "user_refreshToken", data.refreshToken, {
+              maxAge: 60 * 60 * 24 * 30, // 30 days
+            });
 
-              resolve(api(originalConfig));
-            },
-            onFailure: (error: AxiosError) => {
-              reject(error);
-            },
+            api.defaults.headers["Authorization"] = `Bearer ${data.token}`;
+
+            failedRequestsQueue.forEach((req: any) =>
+              req.onSuccess(data.token)
+            );
+            failedRequestsQueue = [];
+          })
+          .catch((erro) => {
+            failedRequestsQueue.forEach((req: any) => req.onFailure(erro));
+            failedRequestsQueue = [];
+            console.log("refresh");
+          })
+          .finally(() => {
+            isRefreshing = false;
+            console.log("refresh");
           });
-        });
-      } else {
-        // logout user
-        destroyCookie(undefined, "user_token");
-        destroyCookie(undefined, "user_refreshToken");
       }
-    }
 
+      return new Promise((resolve, reject) => {
+        failedRequestsQueue.push({
+          onSuccess: (token: string) => {
+            originalConfig.headers["Authorization"] = `Bearer ${token}`;
+
+            resolve(api(originalConfig));
+          },
+          onFailure: (error: AxiosError) => {
+            reject(error);
+          },
+        });
+      });
+    } else {
+      // logout user
+      destroyCookie(undefined, "user_token");
+      destroyCookie(undefined, "user_refreshToken");
+    }
     return Promise.reject(erro);
   }
 );

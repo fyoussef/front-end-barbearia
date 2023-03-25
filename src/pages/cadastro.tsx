@@ -56,7 +56,8 @@ export default function SignUp() {
         <ToastComponent
           message={errorMessage}
           title="Erro"
-          resetState={setShowToast}
+          onCloseToast={() => setShowToast(false)}
+          variant="error"
         />
       )}
 

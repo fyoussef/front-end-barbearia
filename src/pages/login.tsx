@@ -46,7 +46,8 @@ export default function Login() {
         <ToastComponent
           message={errorMessage}
           title="Erro"
-          resetState={setShowToast}
+          onCloseToast={() => setShowToast(false)}
+          variant="error"
         />
       )}
       <div className="w-full h-screen flex justify-center items-center ">

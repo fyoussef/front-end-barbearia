@@ -1,18 +1,21 @@
 import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
 import { MdErrorOutline } from "react-icons/md";
 
 type ToastComponentProps = {
   title: string;
   message: string;
-  resetState: (arg: boolean) => void;
+  onCloseToast: () => void;
+  variant: "error" | "success";
 };
 
 export function ToastComponent({
   message,
   title,
-  resetState,
+  onCloseToast,
+  variant = "error",
 }: ToastComponentProps) {
   const [open, setOpen] = useState(false);
 
@@ -21,7 +24,7 @@ export function ToastComponent({
 
     const time = window.setTimeout(() => {
       setOpen(false);
-      resetState(false);
+      onCloseToast();
     }, 6000);
 
     return () => clearTimeout(time);
@@ -29,19 +32,30 @@ export function ToastComponent({
 
   function handleCloseToast() {
     setOpen(false);
-    resetState(false);
+    onCloseToast();
   }
+
+  const variants = {
+    error: {
+      theme: "bg-red-300 text-red-800 border-red-800",
+      icon: <MdErrorOutline size={18} />,
+    },
+    success: {
+      theme: "bg-green-300 text-green-800 border-green-800",
+      icon: <AiOutlineCheckCircle />,
+    },
+  };
 
   return (
     <Toast.Provider>
       <Toast.Root
-        className="bg-red-500 text-black rounded-md p-4 border border-red-800 relative"
+        className={`${variants[variant].theme} rounded-md p-4 border relative`}
         open={open}
         onOpenChange={setOpen}
       >
         <Toast.Title className="font-bold">
           <div className="flex items-center gap-2">
-            <MdErrorOutline size={18} />
+            {variants[variant].icon}
             {title}
           </div>
         </Toast.Title>

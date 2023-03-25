@@ -93,13 +93,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     parseCookies(ctx).user_token
   }`;
 
-  const req = await api.get("/schedules");
+  try {
+    const req = await api.get("/schedules");
 
-  const { schedules } = req.data;
+    const { schedules } = req.data;
 
-  return {
-    props: {
-      schedules,
-    },
-  };
+    return {
+      props: {
+        schedules,
+      },
+    };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 };
